@@ -38,7 +38,7 @@ $eventos = $eventController->getAll();
                         <?php endif; ?>
                     </p>
                     <p><?= htmlspecialchars($evento['lugar']) ?></p>
-                    <a href="editEvent.php?evento=<?= urlencode($evento['nombre_evento']) ?>">Editar evento</a>
+                    <a href="views/editEvent.php?evento=<?= urlencode($evento['nombre_evento']) ?>">Editar evento</a>
                     <a href="listActivity.php?evento=<?= urlencode($evento['nombre_evento']) ?>">Lista actividades</a>
                 </div>
             <?php endforeach; ?>
@@ -48,7 +48,7 @@ $eventos = $eventController->getAll();
     </section>
 
     <div class="contenedorCrearEvento">
-        <a href="createEvent.php" class="botonCrearEvento">Crear nuevo evento</a>
+        <a href="views/createEvent.php" class="botonCrearEvento">Crear nuevo evento</a>
     </div>
     
     <footer>

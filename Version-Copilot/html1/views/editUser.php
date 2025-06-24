@@ -1,10 +1,11 @@
 <?php
 session_start();
 require_once __DIR__ . '/../controllers/UserController.php';
-require_once __DIR__ . '/../controllers/RequestController.php';
 
+$mensaje = '';
 $userController = new UserController();
 
+// Obtener el email del usuario logueado desde la sesión
 $email = $_SESSION['email'] ?? '';
 $usuario = $userController->getByEmail($email);
 
@@ -13,21 +14,37 @@ if (!$usuario) {
     exit;
 }
 
-$mensaje = '';
+// Si se envía el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $mensaje = $userController->processEditUser($email, $_POST);
-    if ($mensaje === 'Datos actualizados correctamente.') {
-        $_SESSION['email'] = trim($_POST['email']);
-        $usuario = $userController->getByEmail($_SESSION['email']);
-    }
-}
+    $nombre = trim($_POST['nombre'] ?? '');
+    $apellidos = trim($_POST['apellidos'] ?? '');
+    $nuevoEmail = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $password2 = $_POST['password2'] ?? '';
 
-// Procesar solicitud de cambio de rol a promotor
-$requestMensaje = '';
-if (isset($_POST['solicitar_promotor'])) {
-    $emailRequest = $_SESSION['email'] ?? '';
-    $requestController = new RequestController();
-    $requestMensaje = $requestController->createRequest($emailRequest);
+    // Validaciones básicas
+    if ($nombre === '' || $apellidos === '' || $nuevoEmail === '' || $password === '' || $password2 === '') {
+        $mensaje = 'Todos los campos son obligatorios.';
+    } elseif (!filter_var($nuevoEmail, FILTER_VALIDATE_EMAIL)) {
+        $mensaje = 'El correo electrónico no es válido.';
+    } elseif ($password !== $password2) {
+        $mensaje = 'Las contraseñas no coinciden.';
+    } elseif (strlen($password) < 10) {
+        $mensaje = 'La contraseña debe tener al menos 10 caracteres.';
+    } else {
+        // Actualizar usuario
+        $updateData = [
+            'nombre' => $nombre,
+            'apellidos' => $apellidos,
+            'email' => $nuevoEmail,
+            'password' => password_hash($password, PASSWORD_DEFAULT)
+        ];
+        $userController->update($email, $updateData);
+        $_SESSION['email'] = $nuevoEmail;
+        $mensaje = 'Datos actualizados correctamente.';
+        // Recargar datos actualizados
+        $usuario = $userController->getByEmail($nuevoEmail);
+    }
 }
 ?>
 
@@ -42,11 +59,9 @@ if (isset($_POST['solicitar_promotor'])) {
 <body>
     <header>
         <h1>Conciertos y Festivales</h1>
-        <div class="iconHeader">
-            <a href="../index.php" class="iconLogIn">
-                <img src="../Imagenes/home.png" alt="Volver al inicio">
-            </a>
-        </div>
+        <a href="IndexUser.php" class="iconLogIn">
+            <img src="../Imagenes/home.png" alt="Volver al inicio">
+        </a>
     </header>
 
     <div class="containerForm">
@@ -56,70 +71,31 @@ if (isset($_POST['solicitar_promotor'])) {
         <?php endif; ?>
         <form action="" method="POST" class="form">
             <div class="groupForm">
-                <label for="nombre">Nombre*</label>
-                <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($usuario['nombre'] ?? '') ?>" required>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($usuario['nombre'] ?? '') ?>">
             </div>
             <div class="groupForm">
-                <label for="apellidos">Apellidos*</label>
-                <input type="text" id="apellidos" name="apellidos" value="<?= htmlspecialchars($usuario['apellidos'] ?? '') ?>" required>
+                <label for="apellidos">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos" value="<?= htmlspecialchars($usuario['apellidos'] ?? '') ?>">
             </div>
             <div class="groupForm">
-                <label for="email">Email*</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>">
             </div>
             <div class="groupForm">
-                <label for="password">Contraseña*</label>
-                <input type="password" id="password" name="password" value="" required>
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" value="">
             </div>
             <div class="groupForm">
-                <label for="password2">Vuelva a introducir la contraseña*</label>
-                <input type="password" id="password2" name="password2" value="" required>
-            </div>
-            <div class="groupForm">
-                <label for="telefono">Teléfono</label>
-                <input type="number" id="telefono" name="telefono" value="<?= htmlspecialchars($usuario['telefono'] ?? '') ?>">
-            </div>
-            <div class="groupForm">
-                <label for="direccion">Dirección</label>
-                <input type="text" id="direccion" name="direccion" value="<?= htmlspecialchars($usuario['direccion'] ?? '') ?>">
-            </div>
-            <div class="groupForm">
-                <label for="localidad">Localidad</label>
-                <input type="text" id="localidad" name="localidad" value="<?= htmlspecialchars($usuario['localidad'] ?? '') ?>">
-            </div>
-            <div class="groupForm">
-                <label for="codigo_postal">Código Postal</label>
-                <input type="text" id="codigo_postal" name="codigo_postal" value="<?= htmlspecialchars($usuario['codigo_postal'] ?? '') ?>">
-            </div>
-            <div class="groupForm">
-                <label for="tarjeta">Número tarjeta de crédito</label>
-                <input type="number" id="tarjeta" name="tarjeta" value="<?= htmlspecialchars($usuario['tarjeta'] ?? '') ?>">
-            </div>
-            <div class="groupForm">
-                <label for="caducidad">Fecha caducidad (MM/AAAA)</label>
-                <input type="text" id="caducidad" name="caducidad" placeholder="MM/AAAA" value="<?= htmlspecialchars($usuario['caducidad'] ?? '') ?>">
-            </div>
-            <div class="groupForm">
-                <label for="cvc">CVC</label>
-                <input type="number" id="cvc" name="cvc" min="100" max="999" value="<?= htmlspecialchars($usuario['cvc'] ?? '') ?>">
+                <label for="password2">Vuelva a introducir la contraseña</label>
+                <input type="password" id="password2" name="password2" value="">
             </div>
             <div class="groupForm">
                 <button type="submit">Editar</button>
             </div>
         </form>
     </div>
-
-    <div class="containerForm" style="margin-top:30px;">
-        <form action="" method="POST">
-            <div class="groupForm">
-                <button type="submit" name="solicitar_promotor">Solicitar cambio de rol a promotor</button>
-            </div>
-        </form>
-        <?php if (!empty($requestMensaje)): ?>
-            <div style="color:green; margin-top:10px;"><?= htmlspecialchars($requestMensaje) ?></div>
-        <?php endif; ?>
-    </div>
-
+    
     <footer>
         <div id="left">
             <a href="#" class="footer-link">Tiene problemas?</a>
