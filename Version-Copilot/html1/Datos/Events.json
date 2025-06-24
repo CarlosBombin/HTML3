@@ -1,0 +1,35 @@
+[
+    {
+        "nombre_evento": "Silvestre Dangond",
+        "descripcion": "Concierto de Silvestre Dangond en Barcelona.",
+        "tipo_evento": "Concierto",
+        "plazas": 5000,
+        "lugar": "OLIMPIC ARENA BADALONA, BARCELONA",
+        "fecha_inicio": "12/07/2025",
+        "fecha_fin": "17/07/2025",
+        "imagen": "SilvestreDangond.jpg",
+        "actividades": []
+    },
+    {
+        "nombre_evento": "HANS ZIMMER LIVE - THE NEXT LEVEL",
+        "descripcion": "Hans Zimmer en directo con su espectáculo The Next Level.",
+        "tipo_evento": "Concierto",
+        "plazas": 10000,
+        "lugar": "PALAU SANT JORDI, BARCELONA",
+        "fecha_inicio": "26/03/2026",
+        "fecha_fin": "29/03/2026",
+        "imagen": "HansZimmer.jpg",
+        "actividades": []
+    },
+    {
+        "nombre_evento": "Mikel Izal - En La Línea Música",
+        "descripcion": "Mikel Izal en concierto en Cádiz.",
+        "tipo_evento": "Concierto",
+        "plazas": 3000,
+        "lugar": "LA LINEA DE LA CONCEPCIÓN, CADIZ",
+        "fecha_inicio": "13/09/2025",
+        "fecha_fin": "",
+        "imagen": "Izal.jpg",
+        "actividades": []
+    }
+]

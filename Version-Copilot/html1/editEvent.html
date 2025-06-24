@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Evento</title>
+    <link rel="stylesheet" href="estilo-index.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Conciertos y Festivales</h1>
+        <a href="listEventPromotor.html" class="iconLogIn">
+            <img src="Imagenes/home.png" alt="Volver al inicio">
+        </a>
+    </header>
+
+    <div class="containerForm">
+        <h2>Formulario de edicion de eventos</h2>
+        <form action="/editEvent" method="POST" class="form">
+            <div class="groupForm">
+                <label for="nombre">Nombre del evento</label>
+                <input type="text" id="nombre" name="nombre" value="Silvestre Dangond">
+            </div>
+            <div class="groupForm">
+                <label for="fechaInicial">Fecha de comienzo del evento</label>
+                <input type="date" id="fechaInicial" name="fechaInicial" value="2025-07-12">
+            </div>
+            <div class="groupForm">
+                <label for="fechaFinal">Fecha de cuando acaba el evento</label>
+                <input type="date" id="fechaFinal" name="fechaFinal" value="2025-07-17">
+            </div>
+            <div class="groupForm">
+                <label for="tipoEvento">¿Que tipo de evento es?</label>
+                <select name="tipoEvento" id="tipoEvento" value="Concierto">
+                    <option value="Concierto">Concierto</option>
+                    <option value="Cine">Cine</option>
+                    <option value="PruebaDeportiva">PruebaDeportiva</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div class="groupForm">
+                <label for="informacionEvento">Informacion sobre el evento</label>
+                <input type="text" id="informacionEvento" name="informacionEvento" value="Concierto de Silvestre Dangond en Badalona">
+            </div>
+            <div class="groupForm">
+                <label for="lugar">Lugar del evento</label>
+                <input type="text" id="lugar" name="lugar" value="OLIMPIC ARENA BADALONA, BARCELONA">
+            </div>
+            <div class="groupForm">
+                <label for="plazas">Plazas totales del evento</label>
+                <input type="number" id="plazas" name="plazas" value="700">
+            </div>
+            <div class="groupForm">
+                <label for="costePorPlaza">Coste por plaza del evento</label>
+                <input type="number" id="costePorPlaza" name="costePorPlaza" value="5">
+            </div>
+            <div class="groupForm">
+                <button type="submit">Editar Evento</button>
+            </div>
+        </form>
+    </div>
+    
+    <footer>
+        <div id="center">
+            <p>&copy; 2023 Conciertos y Festivales. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(event) {
+                $('input').removeClass('errorField');
+                var fIni = $('#fechaInicial').val();
+                var fFin = $('#fechaFinal').val();
+                var seats = $('#plazas').val();
+                var isError = false;
+
+                if (fIni > fFin) {
+                    alert('La fecha de inicio no puede ser posterior a la fecha de finalizacion.');
+                    $('#fechaInicial').addClass('errorField');
+                    $('#fechaFinal').addClass('errorField');
+                    isError = true;
+                }
+
+                if (seats < 100) {
+                    alert('No se pueden crear eventos con menos de 100 plazas.');
+                    $('#plazas').addClass('errorField');
+                    isError = true;
+                }
+
+                if (isError) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

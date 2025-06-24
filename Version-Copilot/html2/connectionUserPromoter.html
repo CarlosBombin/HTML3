@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="estilo-index.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Conciertos y Festivales</h1>
+        <a href="listEventUser.html" class="iconLogIn">
+            <img src="Imagenes/home.png" alt="Volver al inicio">
+        </a>
+    </header>
+
+    <main>
+        <div class="containerForm">
+            <h2>Contacta con los Promotores</h2>
+            <form action="/contactPromoter" method="POST" class="form">
+                <div class="groupForm">
+                    <textarea id="mensaje" name="mensaje" rows="8" placeholder="Escribe tu mensaje aquí..."></textarea>
+                </div>
+                <div class="groupForm">
+                    <button type="submit">Enviar mensaje</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div id="left">
+            <a href="#" class="footer-link">Tiene problemas?</a>
+        </div>
+        <div id="center">
+            <p>&copy; 2023 Conciertos y Festivales. Todos los derechos reservados.</p>
+        </div>
+        <div id="right">
+            <div class="redesSociales">
+                <a href="#"><img src="Imagenes/facebook.png" alt="Facebook" id="facebook"></a>
+                <a href="#"><img src="Imagenes/instagram.png" alt="Instagram" id="instagram"></a>
+                <a href="#"><img src="Imagenes/twitter.png" alt="Twitter" id="x"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(event) {
+                $('input').removeClass('errorField');
+                var mensage = $('#mensaje').val();
+                var isError = false;
+
+                if (mensage === '') {
+                    alert('Ha de enviar algo por mensaje.');
+                    $('#mensaje').addClass('errorField');
+                    isError = true;
+                }
+
+                if (isError) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

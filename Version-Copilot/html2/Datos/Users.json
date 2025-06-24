@@ -1,0 +1,30 @@
+[
+    {
+        "nombre": "Carlos",
+        "apellidos": "Bombin",
+        "email": "cbomdelhie@gmail.com",
+        "password": "$2y$10$AtHq7rJwib3FeSLTmF9ceO\/Ef4ewkYYMEzmhduxYcp5wO29cLv56K",
+        "rol": "user",
+        "telefono": "911757575",
+        "direccion": "C\\Sierra de Verguerez n\u00ba300",
+        "localidad": "Valladolid",
+        "codigo_postal": "47008",
+        "tarjeta": "1111222233334444",
+        "cvc": "111",
+        "caducidad": "12\/2030"
+    },
+    {
+        "nombre": "Admin",
+        "apellidos": "Admin",
+        "email": "Admin@Admin.com",
+        "password": "$2y$10$Efh\/QscR7SYTS2y8dxeG\/e1yMu.EIWP6bV5GJhnxhm.o90ZA7svY2",
+        "rol": "admin"
+    },
+    {
+        "nombre": "promotor",
+        "apellidos": "promotor",
+        "email": "promotor@promotor.com",
+        "password": "$2y$10$d2pLyRWfj9mihqmpYP0co.cbnKxn8gmmZn3ebUf92N2A5JWWjKcUO",
+        "rol": "promoter"
+    }
+]

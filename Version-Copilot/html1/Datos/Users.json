@@ -1,0 +1,51 @@
+[
+    {
+        "nombre": "Carlos",
+        "apellidos": "Bombin",
+        "email": "cbomdelhie@gmail.com",
+        "password": "$2y$10$AtHq7rJwib3FeSLTmF9ceO\/Ef4ewkYYMEzmhduxYcp5wO29cLv56K",
+        "rol": "user",
+        "telefono": "911757575",
+        "direccion": "C\\Sierra de Verguerez n\u00ba300",
+        "localidad": "Valladolid",
+        "codigo_postal": "47008",
+        "tarjeta": "1111222233334444",
+        "cvc": "111",
+        "caducidad": "12\/2030"
+    },
+    {
+        "nombre": "Admin",
+        "apellidos": "Admin",
+        "email": "Admin@Admin.com",
+        "password": "$2y$10$Efh\/QscR7SYTS2y8dxeG\/e1yMu.EIWP6bV5GJhnxhm.o90ZA7svY2",
+        "rol": "admin"
+    },
+    {
+        "nombre": "promotor",
+        "apellidos": "promotor",
+        "email": "promotor@promotor.com",
+        "password": "$2y$10$d2pLyRWfj9mihqmpYP0co.cbnKxn8gmmZn3ebUf92N2A5JWWjKcUO",
+        "rol": "promoter"
+    },
+    {
+        "nombre": "Pedro",
+        "apellidos": "Alfonso",
+        "email": "PAlfonso@gmail.com",
+        "password": "$2y$10$OpdG2ZVf9ExVy3fk7wpZ\/OR716U2gDg2eiQsm4dE7izKXbQ9FewMm",
+        "rol": "user"
+    },
+    {
+        "nombre": "Laura",
+        "apellidos": "Alfonso",
+        "email": "LAlfonso@gmail.com",
+        "password": "$2y$10$4Juiv6p0iqxj2g88QWnhFehTPWi6qJxa4MQia2GeXPtXQQVflBwOK",
+        "rol": "user"
+    },
+    {
+        "nombre": "Amigo",
+        "apellidos": "Alfonso",
+        "email": "AAlfonso@gmail.com",
+        "password": "$2y$10$5OYAVQAfvu88L.b8HAOtrOUt05chFBLlVkIdecHI5pDxuxHChy\/GO",
+        "rol": "user"
+    }
+]
