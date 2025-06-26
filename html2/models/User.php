@@ -1,6 +1,7 @@
 <?php
 
 class User {
+    public $id;
     public $nombre;
     public $apellidos;
     public $email;
@@ -8,13 +9,15 @@ class User {
     public $telefono;
     public $direccion;
     public $localidad;
-    public $tarjeta;
-    public $caducidad;
-    public $cvc;
+    public $codigoPostal;
+    public $nTarjeta;
+    public $fCaducidad;
+    public $CCV;
     public $saldo;
-    public $rol;
+    public $idRol;
 
     public function __construct($data) {
+        $this->id = $data['id'] ?? null;
         $this->nombre = $data['nombre'] ?? '';
         $this->apellidos = $data['apellidos'] ?? '';
         $this->email = $data['email'] ?? '';
@@ -22,11 +25,12 @@ class User {
         $this->telefono = $data['telefono'] ?? '';
         $this->direccion = $data['direccion'] ?? '';
         $this->localidad = $data['localidad'] ?? '';
-        $this->tarjeta = $data['tarjeta'] ?? '';
-        $this->caducidad = $data['caducidad'] ?? '';
-        $this->cvc = $data['cvc'] ?? '';
+        $this->codigoPostal = $data['codigoPostal'] ?? '';
+        $this->tarjeta = $data['nTarjeta'] ?? '';
+        $this->caducidad = $data['fCaducidad'] ?? '';
+        $this->cvc = $data['CCV'] ?? '';
         $this->saldo = $data['saldo'] ?? 0;
-        $this->rol = $data['rol'] ?? 'user';
+        $this->idRol = $data['idRol'] ?? null;
     }
 }
 ?>

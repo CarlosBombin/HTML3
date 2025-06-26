@@ -3,28 +3,20 @@ session_start();
 require_once __DIR__ . '/../controllers/UserController.php';
 
 $mensaje = '';
+$userController = new UserController();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if ($email === '' || $password === '') {
-        $mensaje = 'Todos los campos son obligatorios.';
+    $result = $userController->processLogin($_POST);
+    if ($result['success']) {
+        $_SESSION['idRol'] = $result['user']['idRol'];
+        $_SESSION['email'] = $result['user']['email'];
+        header('Location:../Index.php');
+        exit;
     } else {
-        $userController = new UserController();
-        $usuario = $userController->loginUser($email, $password);
-
-        if ($usuario) {
-            $_SESSION['rol'] = $usuario['rol'];
-            $_SESSION['email'] = $usuario['email'];
-            header('Location:../Index.php');
-            exit;
-        } else {
-            $mensaje = 'Email o contraseña incorrectos.';
-        }
+        $mensaje = $result['message'];
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="containerForm">
         <h2>Iniciar Sesión</h2>
         <?php if ($mensaje): ?>
-            <div style="color:red;"><?= $mensaje ?></div>
+            <div style="color:red;"><?= htmlspecialchars($mensaje) ?></div>
         <?php endif; ?>
         <form action="" method="POST">
             <div class="groupForm">

@@ -34,11 +34,16 @@ $eventos = $eventController->getAll();
         <?php if ($eventos && count($eventos) > 0): ?>
             <?php foreach ($eventos as $evento): ?>
                 <div class="cardEvent">
-                    <img src="Imagenes/<?= htmlspecialchars($evento['imagen'] ?? 'missing.png') ?>" alt="<?= htmlspecialchars($evento['nombre_evento']) ?>">
-                    <h3><?= htmlspecialchars($evento['nombre_evento']) ?></h3>
-                    <p><?= htmlspecialchars($evento['fecha_inicio']) ?><?= $evento['fecha_fin'] ? ' - ' . htmlspecialchars($evento['fecha_fin']) : '' ?></p>
-                    <p><?= htmlspecialchars($evento['lugar']) ?></p>
-                    <a href="event.php?nombre=<?= urlencode($evento['nombre_evento']) ?>">Más información</a>
+                    <img src="Imagenes/<?= htmlspecialchars($evento->imagen ?? 'missing.png') ?>" alt="<?= htmlspecialchars($evento->nombre) ?>">
+                    <h3><?= htmlspecialchars($evento->nombre) ?></h3>
+                    <p>
+                        <?= htmlspecialchars($evento->fInicio) ?>
+                        <?php if (!empty($evento->fFinal)): ?>
+                            - <?= htmlspecialchars($evento->fFinal) ?>
+                        <?php endif; ?>
+                    </p>
+                    <p><?= htmlspecialchars($evento->lugar) ?></p>
+                    <a href="indexActivity.php?evento=<?= urlencode($evento->nombre) ?>">Mas informacion sobre las actividades</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
@@ -51,7 +56,7 @@ $eventos = $eventController->getAll();
             <a href="connectionUserPromoter.php" class="footer-link">Contactar Promotores</a>
         </div>
         <div id="center">
-            <p>&copy; 2023 Conciertos y Festivales. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Conciertos y Festivales. Todos los derechos reservados.</p>
         </div>
         <div id="right">
             <div class="redesSociales">

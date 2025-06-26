@@ -7,14 +7,12 @@ $userController = new UserController();
 
 $mensaje = '';
 
-// Procesar acciones de aceptar/rechazar
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $email = $_POST['email'];
     if (isset($_POST['aceptar'])) {
-        // Cambiar rol a promotor
         $usuario = $userController->getByEmail($email);
         if ($usuario) {
-            $userController->update($email, ['rol' => 'promoter']);
+            $userController->update($email, ['idRol' => 2]);
             $mensaje = "Rol de $email actualizado a promotor.";
         }
         $requestController->deleteRequest($email);
@@ -24,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     }
 }
 
-// Obtener todas las solicitudes
 $requests = $requestController->getAll();
 
 ?>
@@ -55,11 +52,15 @@ $requests = $requestController->getAll();
                     </thead>
                     <tbody>
                     <?php foreach ($requests as $req): ?>
+                        <?php
+                            $usuario = $userController->getById($req['usuarios_id']);
+                            $email = $usuario ? $usuario['email'] : 'Desconocido';
+                        ?>
                         <tr>
-                            <td><?= htmlspecialchars($req['email']) ?></td>
+                            <td><?= htmlspecialchars($email) ?></td>
                             <td>
                                 <form action="" method="POST" style="display:inline;">
-                                    <input type="hidden" name="email" value="<?= htmlspecialchars($req['email']) ?>">
+                                    <input type="hidden" name="email" value="<?= htmlspecialchars($email) ?>">
                                     <button type="submit" name="aceptar" class="acceptButton">Aceptar</button>
                                     <button type="submit" name="rechazar" class="dismissButton">Rechazar</button>
                                 </form>

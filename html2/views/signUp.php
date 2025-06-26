@@ -3,43 +3,20 @@ session_start();
 require_once __DIR__ . '/../controllers/UserController.php';
 
 $mensaje = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $apellidos = trim($_POST['apellidos'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $password2 = $_POST['password2'] ?? '';
+$userController = new UserController();
 
-    if ($nombre === '' || $apellidos === '' || $email === '' || $password === '' || $password2 === '') {
-        $mensaje = 'Todos los campos son obligatorios.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $mensaje = 'El correo electrónico no es válido.';
-    } elseif ($password !== $password2) {
-        $mensaje = 'Las contraseñas no coinciden.';
-    } elseif (strlen($password) < 10) {
-        $mensaje = 'La contraseña debe tener al menos 10 caracteres.';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $result = $userController->processRegister($_POST);
+    if ($result['success']) {
+        $_SESSION['idRol'] = $result['user']['idRol'];
+        $_SESSION['email'] = $result['user']['email'];
+        header('Location:../Index.php');
+        exit;
     } else {
-        $userController = new UserController();
-        $data = [
-            'nombre' => $nombre,
-            'apellidos' => $apellidos,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-            'rol' => 'user'
-        ];
-        if ($userController->create($data)) {
-            $usuario = $userController->getByEmail($email);
-            $_SESSION['rol'] = $usuario['rol'];
-            $_SESSION['email'] = $usuario['email'];
-            header('Location:../Index.php');
-            exit;
-        } else {
-            $mensaje = 'El correo ya está registrado.';
-        }
+        $mensaje = $result['message'];
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -61,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="containerForm">
         <h2>Crear Cuenta</h2>
         <?php if ($mensaje): ?>
-            <div style="color:red;"><?= $mensaje ?></div>
+            <div style="color:red;"><?= htmlspecialchars($mensaje) ?></div>
         <?php endif; ?>
         <form action="" method="POST" class="form">
             <div class="groupForm">

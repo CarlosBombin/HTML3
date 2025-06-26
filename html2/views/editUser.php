@@ -14,7 +14,7 @@ if (!$usuario) {
 }
 
 $mensaje = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['solicitar_promotor'])) {
     $mensaje = $userController->processEditUser($email, $_POST);
     if ($mensaje === 'Datos actualizados correctamente.') {
         $_SESSION['email'] = trim($_POST['email']);
@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Procesar solicitud de cambio de rol a promotor
 $requestMensaje = '';
 if (isset($_POST['solicitar_promotor'])) {
     $emailRequest = $_SESSION['email'] ?? '';
@@ -57,27 +56,27 @@ if (isset($_POST['solicitar_promotor'])) {
         <form action="" method="POST" class="form">
             <div class="groupForm">
                 <label for="nombre">Nombre*</label>
-                <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($usuario['nombre'] ?? '') ?>" required>
+                <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($usuario['nombre'] ?? '') ?>">
             </div>
             <div class="groupForm">
                 <label for="apellidos">Apellidos*</label>
-                <input type="text" id="apellidos" name="apellidos" value="<?= htmlspecialchars($usuario['apellidos'] ?? '') ?>" required>
+                <input type="text" id="apellidos" name="apellidos" value="<?= htmlspecialchars($usuario['apellidos'] ?? '') ?>">
             </div>
             <div class="groupForm">
                 <label for="email">Email*</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>">
             </div>
             <div class="groupForm">
                 <label for="password">Contraseña*</label>
-                <input type="password" id="password" name="password" value="" required>
+                <input type="password" id="password" name="password" value="">
             </div>
             <div class="groupForm">
                 <label for="password2">Vuelva a introducir la contraseña*</label>
-                <input type="password" id="password2" name="password2" value="" required>
+                <input type="password" id="password2" name="password2" value="">
             </div>
             <div class="groupForm">
                 <label for="telefono">Teléfono</label>
-                <input type="number" id="telefono" name="telefono" value="<?= htmlspecialchars($usuario['telefono'] ?? '') ?>">
+                <input type="text" id="telefono" name="telefono" value="<?= htmlspecialchars($usuario['telefono'] ?? '') ?>">
             </div>
             <div class="groupForm">
                 <label for="direccion">Dirección</label>
@@ -89,19 +88,24 @@ if (isset($_POST['solicitar_promotor'])) {
             </div>
             <div class="groupForm">
                 <label for="codigo_postal">Código Postal</label>
-                <input type="text" id="codigo_postal" name="codigo_postal" value="<?= htmlspecialchars($usuario['codigo_postal'] ?? '') ?>">
+                <input type="text" id="codigoPostal" name="codigoPostal" value="<?= htmlspecialchars($usuario['codigoPostal'] ?? '') ?>">
             </div>
             <div class="groupForm">
                 <label for="tarjeta">Número tarjeta de crédito</label>
-                <input type="number" id="tarjeta" name="tarjeta" value="<?= htmlspecialchars($usuario['tarjeta'] ?? '') ?>">
+                <input type="text" id="nTarjeta" name="nTarjeta" value="<?= htmlspecialchars($usuario['nTarjeta'] ?? '') ?>">
             </div>
             <div class="groupForm">
-                <label for="caducidad">Fecha caducidad (MM/AAAA)</label>
-                <input type="text" id="caducidad" name="caducidad" placeholder="MM/AAAA" value="<?= htmlspecialchars($usuario['caducidad'] ?? '') ?>">
+                <label for="caducidad">Fecha caducidad (YYYY-MM)</label>
+                <input type="month" id="fCaducidad" name="fCaducidad"
+                    value="<?= htmlspecialchars(
+                        isset($usuario['fCaducidad']) && strlen($usuario['fCaducidad']) >= 7
+                            ? substr($usuario['fCaducidad'], 0, 7)
+                            : ''
+                    ) ?>">
             </div>
             <div class="groupForm">
-                <label for="cvc">CVC</label>
-                <input type="number" id="cvc" name="cvc" min="100" max="999" value="<?= htmlspecialchars($usuario['cvc'] ?? '') ?>">
+                <label for="CCV">CCV</label>
+                <input type="text" id="CCV" name="CCV" value="<?= htmlspecialchars($usuario['CCV'] ?? '') ?>">
             </div>
             <div class="groupForm">
                 <button type="submit">Editar</button>

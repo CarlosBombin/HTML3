@@ -18,31 +18,27 @@ $eventos = $eventController->getAll();
 <body>
     <header>
         <h1>Conciertos y Festivales</h1>
-        <a href="logIn.php" class="iconLogIn">
-            <img src="Imagenes/Login.png" alt="login">
-        </a>
-    </header>
-
-    <section class="hero">
-        <div class="textHero">
-            <h2>Descubre los mejores eventos musicales cerca de ti</h2>
+        <div class="iconHeader">
+            <a href="views/logIn.php" class="iconLogIn">
+                <img src="Imagenes/login.png" alt="login">
+            </a>
         </div>
-    </section>
+    </header>
     
     <section class="events">
         <?php if ($eventos && count($eventos) > 0): ?>
             <?php foreach ($eventos as $evento): ?>
                 <div class="cardEvent">
-                    <img src="Imagenes/<?= htmlspecialchars($evento['imagen'] ?? 'missing.png') ?>" alt="<?= htmlspecialchars($evento['nombre_evento']) ?>">
-                    <h3><?= htmlspecialchars($evento['nombre_evento']) ?></h3>
+                    <img src="Imagenes/<?= htmlspecialchars($evento->imagen ?? 'missing.png') ?>" alt="<?= htmlspecialchars($evento->nombre) ?>">
+                    <h3><?= htmlspecialchars($evento->nombre) ?></h3>
                     <p>
-                        <?= htmlspecialchars($evento['fecha_inicio']) ?>
-                        <?php if (!empty($evento['fecha_fin'])): ?>
-                            - <?= htmlspecialchars($evento['fecha_fin']) ?>
+                        <?= htmlspecialchars($evento->fInicio) ?>
+                        <?php if (!empty($evento->fFinal)): ?>
+                            - <?= htmlspecialchars($evento->fFinal) ?>
                         <?php endif; ?>
                     </p>
-                    <p><?= htmlspecialchars($evento['lugar']) ?></p>
-                    <a href="signup.php?evento=<?= urlencode($evento['nombre_evento']) ?>">Regístrate para participar</a>
+                    <p><?= htmlspecialchars($evento->lugar) ?></p>
+                    <a href="signup.php?evento=<?= urlencode($evento->nombre) ?>">Regístrate para participar</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
@@ -55,7 +51,7 @@ $eventos = $eventController->getAll();
             <a href="#" class="footer-link">¿Tiene problemas?</a>
         </div>
         <div id="center">
-            <p>&copy; 2023 Conciertos y Festivales. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Conciertos y Festivales. Todos los derechos reservados.</p>
         </div>
         <div id="right">
             <div class="redesSociales">
@@ -64,3 +60,6 @@ $eventos = $eventController->getAll();
                 <a href="#"><img src="Imagenes/twitter.png" alt="Twitter" id="x"></a>
             </div>
         </div>
+    </footer>
+</body>
+</html>

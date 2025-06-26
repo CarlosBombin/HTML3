@@ -2,7 +2,11 @@
 require_once __DIR__ . '/../controllers/EventController.php';
 
 $eventController = new EventController();
-$eventos = $eventController->getAll();
+$usuarioEmail = $_SESSION['email'] ?? '';
+$eventos = [];
+if ($usuarioEmail) {
+    $eventos = $eventController->getByUserEmail($usuarioEmail); // Debes crear este método en el controlador
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,17 +33,17 @@ $eventos = $eventController->getAll();
         <?php if ($eventos && count($eventos) > 0): ?>
             <?php foreach ($eventos as $evento): ?>
                 <div class="cardEvent">
-                    <img src="Imagenes/<?= htmlspecialchars($evento['imagen'] ?? 'missing.png') ?>" alt="<?= htmlspecialchars($evento['nombre_evento']) ?>">
-                    <h3><?= htmlspecialchars($evento['nombre_evento']) ?></h3>
+                    <img src="Imagenes/<?= htmlspecialchars($evento->imagen ?? 'missing.png') ?>" alt="<?= htmlspecialchars($evento->nombre) ?>">
+                    <h3><?= htmlspecialchars($evento->nombre) ?></h3>
                     <p>
-                        <?= htmlspecialchars($evento['fecha_inicio']) ?>
-                        <?php if (!empty($evento['fecha_fin'])): ?>
-                            - <?= htmlspecialchars($evento['fecha_fin']) ?>
+                        <?= htmlspecialchars($evento->fInicio) ?>
+                        <?php if (!empty($evento->fFinal)): ?>
+                            - <?= htmlspecialchars($evento->fFinal) ?>
                         <?php endif; ?>
                     </p>
-                    <p><?= htmlspecialchars($evento['lugar']) ?></p>
-                    <a href="views/editEvent.php?evento=<?= urlencode($evento['nombre_evento']) ?>">Editar evento</a>
-                    <a href="listActivity.php?evento=<?= urlencode($evento['nombre_evento']) ?>">Lista actividades</a>
+                    <p><?= htmlspecialchars($evento->lugar) ?></p>
+                    <a href="views/editEvent.php?evento=<?= urlencode($evento->nombre) ?>">Editar evento</a>
+                    <a href="indexActivity.php?evento=<?= urlencode($evento->nombre) ?>">Lista actividades</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
@@ -67,3 +71,4 @@ $eventos = $eventController->getAll();
         </div>
     </footer>
 </body>
+</html>
