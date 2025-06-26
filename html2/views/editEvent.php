@@ -5,9 +5,9 @@ $mensaje = '';
 $eventController = new EventController();
 $tipos = $eventController->getTiposDeEventos();
 
-// Obtener el nombre del evento por GET o POST
 $nombreEvento = $_GET['evento'] ?? $_POST['nombre_original'] ?? '';
 $evento = $eventController->getByNombre($nombreEvento);
+$plazasTotales = $evento ? $eventController->getPlazasTotalesPorEvento($evento->id) : 0;
 
 if (!$evento) {
     $mensaje = "Evento no encontrado.";
@@ -24,6 +24,7 @@ if (!$evento) {
         $mensaje = $result['message'];
         if ($result['success']) {
             $evento = $result['evento'];
+            $plazasTotales = $eventController->getPlazasTotalesPorEvento($evento->id);
         }
     }
 }
@@ -91,7 +92,7 @@ if (!$evento) {
             </div>
             <div class="groupForm">
                 <label for="plazas">Plazas totales del evento</label>
-                <input type="number" id="plazas" name="plazas" value="<?= htmlspecialchars($evento->plazas) ?>" readonly>
+                <input type="number" id="plazas" name="plazas" value="<?= htmlspecialchars($plazasTotales) ?>" readonly>
             </div>
             <div class="groupForm">
                 <label for="costePorPlaza">Coste por plaza del evento</label>
@@ -104,7 +105,7 @@ if (!$evento) {
         <div class="groupForm">
             <form action="" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este evento?');">
                 <input type="hidden" name="nombre_original" value="<?= htmlspecialchars($evento->nombre) ?>">
-                <button type="submit" name="eliminar" value="1" class="botonEliminarEvento">Eliminar Evento</button>
+                <button type="submit" name="eliminar" value="1" class="botonEliminarEvento" style="background-color:red;color:white;">Eliminar Evento</button>
             </form>
         </div>
         <?php endif; ?>

@@ -38,7 +38,7 @@ $eventos = $eventController->getAll();
                         <?php endif; ?>
                     </p>
                     <p><?= htmlspecialchars($evento->lugar) ?></p>
-                    <a href="signup.php?evento=<?= urlencode($evento->nombre) ?>">Regístrate para participar</a>
+                    <a href="views/signup.php?">Regístrate para participar</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>

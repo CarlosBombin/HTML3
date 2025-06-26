@@ -39,7 +39,7 @@ if ($evento) {
                     <p><?= htmlspecialchars($actividad->fecha) ?></p>
                     <p>Plazas totales: <?= htmlspecialchars($actividad->plazas) ?></p>
                     <p><?= htmlspecialchars($actividad->lugar) ?></p>
-                    <a href="views/editActivity.php?actividad=<?= urlencode($actividad->nombre) ?>">Editar actividad</a>
+                    <a href="views/editActivity.php?actividad=<?= urlencode($actividad->nombre) ?>&evento=<?= urlencode($evento->nombre) ?>">Editar actividad</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>

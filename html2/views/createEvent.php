@@ -88,7 +88,7 @@ $actividades = $_POST['actividades'] ?? [];
             </div>
             <div class="groupForm">
                 <label for="costePorPlaza">Coste por plaza del evento</label>
-                <input type="number" id="costePorPlaza" name="costePorPlaza" value="<?= htmlspecialchars($_POST['costePorPlaza'] ?? '') ?>" step="any" required>
+                <input type="number" id="costePorPlaza" name="costePorPlaza" value="<?= htmlspecialchars($_POST['costePorPlaza'] ?? '') ?>" step="any">
             </div>
 
             <h3>Actividades del evento</h3>

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../Datos/Database.php';
 require_once __DIR__ . '/../models/Event.php';
 require_once __DIR__ . '/UserController.php';
+require_once __DIR__ . '/ActivityController.php';
 
 class EventController {
     private $pdo;
@@ -71,6 +72,11 @@ class EventController {
 
     public function processCreateEvent($post, $email) {
         $nombre = trim($post['nombre'] ?? '');
+
+        if ($this->getByNombre($nombre)) {
+            return 'Ya existe un evento con ese nombre. Elige otro nombre diferente.';
+        }
+
         $fechaInicial = $post['fechaInicial'] ?? '';
         $fechaFinal = $post['fechaFinal'] ?? '';
         $idTipoEvento = $post['idTipoEvento'] ?? null;
@@ -99,6 +105,7 @@ class EventController {
 
         $actividades = $post['actividades'];
         $totalPlazas = 0;
+        $nombresActividades = [];
         foreach ($actividades as $i => &$actividad) {
             $actividad['nombre'] = trim($actividad['nombre'] ?? '');
             $actividad['descripcion'] = trim($actividad['descripcion'] ?? '');
@@ -119,12 +126,21 @@ class EventController {
             if ($actividad['fecha'] < $fechaInicial || $actividad['fecha'] > $fechaFinal) {
                 return 'La fecha de cada actividad debe estar entre la fecha de inicio y fin del evento.';
             }
+            if (in_array(strtolower($actividad['nombre']), $nombresActividades)) {
+                return 'No puede haber dos actividades con el mismo nombre en el evento.';
+            }
+            $nombresActividades[] = strtolower($actividad['nombre']);
+
             $totalPlazas += $actividad['plazas'];
         }
         unset($actividad);
 
         if ($totalPlazas < 100) {
             return 'La suma total de plazas de todas las actividades debe ser al menos 100.';
+        }
+
+        if (!is_numeric($precio) || $precio < 0) {
+            return 'El precio debe ser un número positivo o 0.';
         }
 
         $data = [
@@ -160,10 +176,36 @@ class EventController {
         }
     }
 
-    public function processEditEvent($originalNombre, $post) {
+    public function processEditEvent($nombreEvento, $post) {
+        $evento = $this->getByNombre($nombreEvento);
+        if (!$evento) {
+            return ['success' => false, 'message' => 'Evento no encontrado.'];
+        }
+
         $nombre = trim($post['nombre'] ?? '');
-        $fechaInicial = $post['fechaInicial'] ?? '';
+
+        if ($nombre !== $evento->nombre && $this->getByNombre($nombre)) {
+            return ['success' => false, 'message' => 'Ya existe un evento con ese nombre. Elige otro nombre diferente.'];
+        }
+
+        $fechaInicio = $post['fechaInicial'] ?? '';
         $fechaFinal = $post['fechaFinal'] ?? '';
+
+        $activityController = new ActivityController();
+        $actividades = $activityController->getByEvento($evento->id);
+
+        foreach ($actividades as $actividad) {
+            if (
+                ($fechaInicio && $actividad->fecha < $fechaInicio) ||
+                ($fechaFinal && $actividad->fecha > $fechaFinal)
+            ) {
+                return [
+                    'success' => false,
+                    'message' => "No puedes guardar el evento porque la actividad '{$actividad->nombre}' tiene una fecha fuera del rango del evento."
+                ];
+            }
+        }
+
         $idTipoEvento = $post['idTipoEvento'] ?? '';
         $informacionEvento = trim($post['informacionEvento'] ?? '');
         $lugar = trim($post['lugar'] ?? '');
@@ -171,20 +213,17 @@ class EventController {
         $precio = $post['costePorPlaza'] ?? '';
         $hoy = date('Y-m-d');
 
-        if ($nombre === '' || $fechaInicial === '' || $fechaFinal === '' || $idTipoEvento === '' ||
+        if ($nombre === '' || $idTipoEvento === '' ||
             $informacionEvento === '' || $lugar === '' || $plazas === '' || $precio === '') {
             return ['success' => false, 'message' => 'Todos los campos son obligatorios.'];
-        } elseif ($fechaInicial < $hoy) {
+        } elseif ($fechaInicio < $hoy) {
             return ['success' => false, 'message' => 'La fecha de inicio debe ser mayor o igual a hoy.'];
-        } elseif ($fechaInicial > $fechaFinal) {
+        } elseif ($fechaInicio > $fechaFinal) {
             return ['success' => false, 'message' => 'La fecha de inicio no puede ser posterior a la fecha de finalización.'];
         } elseif ($plazas < 100) {
             return ['success' => false, 'message' => 'No se pueden crear eventos con menos de 100 plazas.'];
-        }
-
-        $evento = $this->getByNombre($originalNombre);
-        if (!$evento) {
-            return ['success' => false, 'message' => 'Evento no encontrado.'];
+        } elseif (!is_numeric($precio) || $precio < 0) {
+            return ['success' => false, 'message' => 'El precio debe ser un número positivo o 0.'];
         }
 
         $updateData = [
@@ -194,7 +233,7 @@ class EventController {
             'plazas' => (int)$plazas,
             'precio' => (float)$precio,
             'lugar' => $lugar,
-            'fInicio' => $fechaInicial,
+            'fInicio' => $fechaInicio,
             'fFinal' => $fechaFinal
         ];
 
@@ -245,5 +284,15 @@ class EventController {
             $result[] = new Event($row);
         }
         return $result;
+    }
+
+    public function getPlazasTotalesPorEvento($eventoId) {
+        $activityController = new ActivityController();
+        $actividades = $activityController->getByEvento($eventoId);
+        $plazasTotales = 0;
+        foreach ($actividades as $actividad) {
+            $plazasTotales += $actividad->plazas;
+        }
+        return $plazasTotales;
     }
 }

@@ -8,7 +8,8 @@ $activityController = new ActivityController();
 $eventController = new EventController();
 
 $nombreActividad = $_GET['actividad'] ?? '';
-$actividad = $activityController->getByNombre($nombreActividad);
+$nombreEvento = $_GET['evento'] ?? '';
+$actividad = $activityController->getByNombre($nombreActividad, $nombreEvento);
 
 if (!$actividad) {
     $mensaje = 'Actividad no encontrada.';

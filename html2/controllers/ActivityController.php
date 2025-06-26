@@ -91,6 +91,12 @@ class ActivityController {
             return "Todos los campos son obligatorios y las plazas deben ser mayores que 0.";
         }
 
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM actividades WHERE nombre = ? AND idEvento = ?");
+        $stmt->execute([$nombre, $evento->id]);
+        if ($stmt->fetchColumn() > 0) {
+            return "Ya existe una actividad con ese nombre en este evento. Elige otro nombre.";
+        }
+
         $data = [
             'nombre' => $nombre,
             'descripcion' => $descripcion,
@@ -104,9 +110,17 @@ class ActivityController {
         return 'Actividad creada correctamente.';
     }
 
-    public function getByNombre($nombre) {
-        $stmt = $this->pdo->prepare("SELECT * FROM actividades WHERE nombre = ?");
-        $stmt->execute([$nombre]);
+    public function getByNombre($nombre, $nombreEvento) {
+        $stmtEvento = $this->pdo->prepare("SELECT id FROM eventos WHERE nombre = ?");
+        $stmtEvento->execute([$nombreEvento]);
+        $rowEvento = $stmtEvento->fetch();
+        if (!$rowEvento) {
+            return null;
+        }
+        $idEvento = $rowEvento['id'];
+
+        $stmt = $this->pdo->prepare("SELECT * FROM actividades WHERE nombre = ? AND idEvento = ?");
+        $stmt->execute([$nombre, $idEvento]);
         $row = $stmt->fetch();
         return $row ? new Activity($row) : null;
     }
@@ -131,6 +145,23 @@ class ActivityController {
             $nuevaActividad['fecha'] === ''
         ) {
             return "Todos los campos son obligatorios y las plazas deben ser mayores que 0.";
+        }
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM actividades WHERE nombre = ? AND idEvento = ? AND id != ?");
+        $stmt->execute([$nuevaActividad['nombre'], $actividad->idEvento, $actividad->id]);
+        if ($stmt->fetchColumn() > 0) {
+            return "Ya existe otra actividad con ese nombre en este evento. Elige otro nombre.";
+        }
+
+        $stmtEvento = $this->pdo->prepare("SELECT fInicio, fFinal FROM eventos WHERE id = ?");
+        $stmtEvento->execute([$actividad->idEvento]);
+        $evento = $stmtEvento->fetch();
+        if ($evento) {
+            $fechaInicial = $evento['fInicio'];
+            $fechaFinal = $evento['fFinal'];
+            if ($nuevaActividad['fecha'] < $fechaInicial || $nuevaActividad['fecha'] > $fechaFinal) {
+                return "La fecha de la actividad debe estar entre la fecha inicial ($fechaInicial) y final ($fechaFinal) del evento.";
+            }
         }
 
         $sumaPlazas = 0;
